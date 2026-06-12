@@ -1,0 +1,6 @@
+{
+  "name": "Agency Content OS",
+  "description": "Multi-tenant SaaS for managing content across multiple brands.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
