@@ -21,7 +21,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("🔍 AuthProvider mount - setting up auth listener");
+    
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("🔄 onAuthStateChanged:", currentUser ? `✓ ${currentUser.email}` : "✗ (logged out)");
       setUser(currentUser);
       setLoading(false);
     });
@@ -31,9 +34,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error("Sign in failed", error);
+      console.log("🔐 Starting signInWithPopup...");
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("✓ signInWithPopup succeeded:", result.user.email);
+      setUser(result.user);
+    } catch (error: any) {
+      console.error("❌ Sign in failed:", error?.code, error?.message);
+
+      if (error?.code === "auth/unauthorized-domain") {
+        const currentDomain = window.location.hostname;
+        alert(
+          `Dominio nao autorizado no Firebase Auth: ${currentDomain}.\n\n` +
+            "No Firebase Console, adicione este dominio em Authentication > Settings > Authorized domains."
+        );
+        return;
+      }
+
+      if (error?.code === "auth/popup-blocked") {
+        alert("Popup foi bloqueado. Verifique as configurações de pop-ups do navegador.");
+        return;
+      }
+
+      if (error?.code !== "auth/popup-closed-by-user") {
+        alert("Falha ao autenticar com Google. Verifique as configuracoes do Firebase Auth.");
+      }
     }
   };
 

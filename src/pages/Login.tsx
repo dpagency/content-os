@@ -1,16 +1,40 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/auth-context";
-import { Layers } from "lucide-react";
+import dpAgencyLogo from "../../dp-agency.png";
 
 export function Login() {
-  const { signInWithGoogle } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirecionar para dashboard se já autenticado
+  useEffect(() => {
+    if (user) {
+      console.log("✓ Usuário autenticado, redirecionando para dashboard...");
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#09090B] text-slate-300 p-6 font-sans">
       <div className="w-full max-w-md bg-[#121214] border border-white/5 rounded-2xl p-8 shadow-xl text-center relative overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-indigo-500/5 to-transparent"></div>
-        <div className="flex justify-center mb-6 relative">
-          <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-xl">
-            <Layers className="w-6 h-6" />
+        <div className="relative mb-6 flex justify-center">
+          <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-black shadow-xl ring-1 ring-white/10">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/5 p-1.5 shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
+              <img
+                src={dpAgencyLogo}
+                alt="DP Agency"
+                className="h-full w-full rounded-full object-contain"
+              />
+            </div>
+            <div className="absolute -right-2 -top-2 flex h-16 w-16 items-center justify-center rounded-full bg-black p-1.5 shadow-lg ring-1 ring-white/15">
+              <img
+                src="https://www.hypedigital.pt/wp-content/uploads/2021/11/Untitled-1-2.png"
+                alt="Hype Digital"
+                className="h-full w-full rounded-full object-contain"
+              />
+            </div>
           </div>
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-white mb-2 relative">
